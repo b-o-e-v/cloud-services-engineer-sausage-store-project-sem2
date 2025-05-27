@@ -1,0 +1,26 @@
+# Зависимости
+node_modules
+
+# Логи
+*.log
+
+# Локальные файлы окружения
+.env
+.env.*.local
+
+# IDE
+.vscode
+
+# Системные файлы
+.DS_Store
+
+# Git
+.git
+.gitignore
+*.md
+
+# Вывод тестов
+coverage
+
+# Артефакты сборки
+dist

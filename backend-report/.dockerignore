@@ -1,0 +1,34 @@
+# Зависимости
+vendor
+Gopkg.lock
+Gopkg.toml
+
+# Логи
+*.log
+
+# Локальные файлы окружения
+.env
+
+# IDE
+.vscode
+
+# Системные файлы
+.DS_Store
+
+# Git
+.git
+.gitignore
+*.md
+
+# Вывод тестов и кэш
+coverage
+*.test
+*.out
+
+# Артефакты сборки и бинарные файлы
+bin
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
