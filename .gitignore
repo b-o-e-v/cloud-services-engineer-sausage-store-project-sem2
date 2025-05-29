@@ -1,6 +1,7 @@
-# Build and dependency frontend APP
+# Build and dependency
 node_modules
 dist
+target
 
 # Local environment files
 .env

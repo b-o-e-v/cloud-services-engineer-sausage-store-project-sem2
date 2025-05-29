@@ -1,0 +1,36 @@
+# Временные файлы
+*.log
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# IDE
+.idea/
+.vscode/
+.project/
+.classpath/
+.settings/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Артефакты сборки
+target/
+
+# Тестовые отчёты и кэш
+surefire-reports/
+test-output/
+.mvn/
+.maven/
+
+# # Git / служебные файлы
+.git/
+.gitignore
+docker-compose.yml
+*.iml
+
+# Документация
+README.md
+docs/
