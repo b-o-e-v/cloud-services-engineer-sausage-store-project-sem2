@@ -1,8 +1,12 @@
-# Build and dependency
+# Сборка
 node_modules
 dist
 target
 
-# Local environment files
+# Переменные окружения
 .env
 .env.*.local
+
+# Локальные файлы
+docker-compose.yml
+*.local
