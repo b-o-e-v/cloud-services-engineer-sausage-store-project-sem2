@@ -10,3 +10,6 @@ target
 # Локальные файлы
 docker-compose.yml
 *.local
+
+# Системные файлы
+.DS_Store

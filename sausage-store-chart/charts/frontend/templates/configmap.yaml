@@ -35,7 +35,7 @@ data:
               try_files $uri $uri/ /index.html;
           }
 
-            location /api {
+          location /api {
               proxy_pass http://{{ .Release.Name }}-backend-service:8080;
           }
 
@@ -44,5 +44,4 @@ data:
               root   /usr/share/nginx/html;
           }
       }
-
     }

@@ -15,18 +15,18 @@ frontend:
   service:
     port: 80
   ingress:
-    host: YOUR_STUDENT_HOSTNAME.students-projects.ru # Корректный домен будет указан в задании
+    host: boev.students-projects.ru # Корректный домен будет указан в задании
     path: /
     pathType: Prefix
   containerPort: 80
-  image: YOUR_DOCKERHUB/sausage-frontend:latest
+  image: b0ev/sausage-frontend:latest
   resources:
     requests:
+      cpu: "200m"
       memory: "128Mi"
-      cpu: "100m"
     limits:
-      memory: "128Mi"
-      cpu: "1"
+      cpu: "400m"
+      memory: "300Mi"
   nginxConf: nginx.conf
 
 backend:
@@ -45,34 +45,60 @@ backend:
   revisionHistoryLimit: 15
   replicas: 1
   strategy:
-  ### Опишите стратегию RollingUpdate для бэкенда
-  image: YOUR_DOCKERHUB/sausage-backend:latest
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 2
+  image: b0ev/sausage-backend:latest
   imagePullPolicy: Always
   resources:
     requests:
-      memory: "256Mi"
-      cpu: "100m"
+      cpu: "700m"
+      memory: "200Mi"
     limits:
-      memory: "512Mi"
-      cpu: "1"
+      cpu: "900m"
+      memory: "700Mi"
   containerPort: 8080
   livenessProbe:
-  ### Опишите LivenessProbe для бэкенда
+    httpGet:
+      path: /actuator/health
+      port: 8080
+    initialDelaySeconds: 15
+    periodSeconds: 30
+    timeoutSeconds: 1
+    failureThreshold: 6
   vpa:
-  ### Опишите VPA для бэкенда
+    updatePolicy:
+      updateMode: "Recreate"
+    resourcePolicy:
+      containerPolicies:
+        - containerName: "*"
+          minAllowed:
+            cpu: 500m
+            memory: 200Mi
+          maxAllowed:
+            cpu: 1200m
+            memory: 1Gi
+          controlledResources: ["cpu", "memory"]
 
-backend-report:
-### Опишите значения для backend-report
-### Приложение должно использовать стратегию Recreate
-### Приложение использует переменную PORT - порт, на котором оно запустится и DB - Uri-подключение к mongodb. 
-### DB положите в Secret, PORT в ConfigMap
-### Опишите HPA для backend-report
+# backend-report:
+# ### Опишите значения для backend-report
+# ### Приложение должно использовать стратегию Recreate
+# ### Приложение использует переменную PORT - порт, на котором оно запустится и DB - Uri-подключение к mongodb. 
+# ### DB положите в Secret, PORT в ConfigMap
+# ### Опишите HPA для backend-report
 
 infra:
-  postgresql:
-  ### Опишите необходимые переменные для развертывания PostgresQL в кластере Kubernetes
   mongodb:
     env:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: sausage-store
+      MONGO_INITDB_ROOT_USERNAME: reports
+      MONGO_INITDB_ROOT_PASSWORD: reportspassword
     containerPort: 27017
+
+  postgresql:
+    env:
+      POSTGRES_DB: sausage-store
+      POSTGRES_PASSWORD: storepassword
+      POSTGRES_USER: store
+    containerPort: 5432

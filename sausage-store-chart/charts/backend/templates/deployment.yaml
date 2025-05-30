@@ -32,7 +32,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image }}
-          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
@@ -81,6 +81,7 @@ spec:
               path: report_path
             - key: log_path
               path: log_path
+
 ---
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
