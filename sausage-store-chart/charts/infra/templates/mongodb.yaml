@@ -18,11 +18,22 @@ spec:
       containers:
       - name: mongodb
         image: {{ .Values.mongodb.image }}
-        envFrom:
-          - configMapRef:
-              name: mongodb-conf
-          - secretRef:
-              name: mongodb-secret
+        env:
+          - name: MONGO_INITDB_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: mongodb-conf
+                key: MONGO_INITDB_DATABASE
+          - name: MONGO_INITDB_ROOT_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: mongodb-conf
+                key: MONGO_INITDB_ROOT_USERNAME
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-secret
+                key: MONGO_INITDB_ROOT_PASSWORD
         ports:
         - containerPort: {{ .Values.mongodb.containerPort }}
         resources:
@@ -62,6 +73,7 @@ metadata:
 data:
   MONGO_INITDB_DATABASE: "{{ .Values.mongodb.env.MONGO_INITDB_DATABASE }}"
   MONGO_INITDB_ROOT_USERNAME: "{{ .Values.mongodb.env.MONGO_INITDB_ROOT_USERNAME }}"
+  MONGO_INITDB_USERNAME: "{{ .Values.mongodb.env.MONGO_INITDB_USERNAME }}"
 
 ---
 apiVersion: v1
@@ -71,3 +83,4 @@ metadata:
 type: Opaque
 stringData:
   MONGO_INITDB_ROOT_PASSWORD: "{{ .Values.mongodb.env.MONGO_INITDB_ROOT_PASSWORD }}"
+  MONGO_INITDB_PASSWORD: "{{ .Values.mongodb.env.MONGO_INITDB_PASSWORD }}"

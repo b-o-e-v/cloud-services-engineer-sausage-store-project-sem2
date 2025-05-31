@@ -21,11 +21,11 @@ frontend:
   image: b0ev/sausage-frontend:latest
   resources:
     requests:
-      cpu: 200m
-      memory: 128Mi
+      cpu: 100m
+      memory: 96Mi
     limits:
-      cpu: 400m
-      memory: 300Mi
+      cpu: 200m
+      memory: 180Mi
   nginxConf: nginx.conf
 
 backend:
@@ -52,35 +52,37 @@ backend:
     logPath: /logs
   resources:
     requests:
-      cpu: 700m
+      cpu: 600m
       memory: 200Mi
     limits:
-      cpu: 900m
+      cpu: 800m
       memory: 700Mi
   livenessProbe:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 15
+    initialDelaySeconds: 30
     periodSeconds: 30
     timeoutSeconds: 1
-    failureThreshold: 6
+    failureThreshold: 3
   vpa:
     updatePolicy:
-      updateMode: Recreate
+      updateMode: "Off"
     resourcePolicy:
       containerPolicies:
         - containerName: "*"
           minAllowed:
-            cpu: 500m
-            memory: 200Mi
+            cpu: 300m
+            memory: 180Mi
           maxAllowed:
-            cpu: 1200m
-            memory: 1Gi
+            cpu: 800m
+            memory: 800Mi
           controlledResources: ["cpu", "memory"]
 
 backend-report:
   replicas: 1
+  strategy:
+    type: Recreate
   image: b0ev/sausage-backend-report:latest
   service:
     port: 8080
@@ -95,11 +97,11 @@ backend-report:
     dbpassword: reportspassword
   resources:
     requests:
-      cpu: 300m
-      memory: 128Mi
+      cpu: 150m
+      memory: 96Mi
     limits:
-      cpu: 500m
-      memory: 300Mi
+      cpu: 300m
+      memory: 180Mi
   hpa:
     enabled: true
     minReplicas: 1
@@ -112,30 +114,42 @@ infra:
     image: mongo:8.0.9
     env:
       MONGO_INITDB_DATABASE: sausage-store
-      MONGO_INITDB_ROOT_USERNAME: reports
-      MONGO_INITDB_ROOT_PASSWORD: reportspassword
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_USERNAME: reports
+      MONGO_INITDB_PASSWORD: reportspassword
     containerPort: 27017
     resources:
       requests:
         cpu: 50m
         memory: 128Mi
       limits:
-        cpu: 500m
+        cpu: 300m
         memory: 256Mi
+
+  mongodbInit:
+    image: mongo:8.0.9
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 50m
+        memory: 128Mi
 
   postgresql:
     replicas: 1
     image: postgres:17.5
     env:
       POSTGRES_DB: sausage-store
-      POSTGRES_PASSWORD: storepassword
       POSTGRES_USER: store
+      POSTGRES_PASSWORD: storepassword
       PGDATA: /var/lib/postgresql/data/pgdata
     containerPort: 5432
     resources:
       requests:
-        cpu: 400m
-        memory: 300Mi
+        cpu: 300m
+        memory: 250Mi
       limits:
-        cpu: 700m
-        memory: 600Mi
+        cpu: 500m
+        memory: 500Mi

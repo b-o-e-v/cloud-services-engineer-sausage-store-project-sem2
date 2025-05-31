@@ -6,7 +6,7 @@ metadata:
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
-    type: Recreate
+{{ toYaml .Values.strategy | indent 4 }}
   selector:
     matchLabels:
       app: "{{ .Release.Name }}-{{ .Chart.Name }}"
