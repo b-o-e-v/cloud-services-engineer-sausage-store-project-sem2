@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}"
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ .Chart.Name }}
@@ -19,12 +19,14 @@ spec:
     type: {{ .Values.strategy.type }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-{{ .Chart.Name }}
+      app: "{{ .Release.Name }}-{{ .Chart.Name }}"
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-{{ .Chart.Name }}
+        app: "{{ .Release.Name }}-{{ .Chart.Name }}"
     spec:
+      securityContext:
+        runAsUser: 0
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image }}
@@ -35,14 +37,14 @@ spec:
             - name: {{ .Chart.Name }}
               containerPort: {{ .Values.containerPort }}
           volumeMounts:
-          - name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
+          - name: "{{ .Release.Name }}-{{ .Chart.Name }}-conf"
             mountPath: /etc/nginx/{{ .Values.nginxConf }}
             subPath: {{ .Values.nginxConf }}
             readOnly: true
       volumes:
-        - name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
+        - name: "{{ .Release.Name }}-{{ .Chart.Name }}-conf"
           configMap:
-            name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
+            name: "{{ .Release.Name }}-{{ .Chart.Name }}-conf"
             items:
               - key: {{ .Values.nginxConf }}
-                path: {{ .Values.nginxConf }} 
+                path: {{ .Values.nginxConf }}

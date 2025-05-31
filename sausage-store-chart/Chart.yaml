@@ -5,13 +5,17 @@ name: sausage-store
 description: Sausage Store Helm Chart
 
 version: 0.1.0
-appVersion: "latest"
+appVersion: latest
+
+maintainers:
+  - name: Boev Aleksandr
+    email: b.0.e.v@yandex.ru
 
 dependencies:
   - name: backend
     version: 0.1.0
-  # - name: backend-report
-  #   version: 0.1.0
+  - name: backend-report
+    version: 0.1.0
   - name: frontend
     version: 0.1.0
   - name: infra
