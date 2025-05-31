@@ -87,7 +87,8 @@ jobs:
           helm repo update
       - name: Setup kubeconfig
         run: |
-          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
         shell: bash
       - name: Deploy Helm chart
         run: |
